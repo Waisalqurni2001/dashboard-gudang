@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Distribusi Pupuk & Chemical</title>
+  <title>Dashboard Gudang</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -19,7 +19,10 @@
     }
 
     body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #f5f7fa;
+      margin: 0;
+      padding: 10px;
     }
 
     .hidden {
@@ -92,10 +95,10 @@
 
     .card {
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .grid-2 {
@@ -111,11 +114,75 @@
       margin-bottom: 20px;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
     .summary-item {
-      background: white;
-      padding: 15px;
+      background: #f8f9fa;
+      padding: 12px;
       border-radius: 8px;
-      border-left: 4px solid #2ecc71;
+      text-align: center;
+    }
+
+    .summary-item .angka {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .summary-item .label {
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-size: 11px;
+      color: #7f8c8d;
+    }
+
+    .kategori {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .Pupuk {
+      background: #e8f5e9;
+      color: #27ae60;
+    }
+
+    .Insektisida {
+      background: #fef5e7;
+      color: #f39c12;
+    }
+
+    .Herbisida {
+      background: #ffea;
+      color: #e74c3c;
+    }
+
+    .Fungisida {
+      background: #eaf2ff;
+      color: #3498db;
     }
 
     .summary-item h3 {
@@ -287,264 +354,266 @@
         <button class="logout" onclick="logout()">Logout</button>
       </div>
 
-      <div class="grid-5">
-        <div class="grid-5">
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:12px;">Ringkasan Gudang</div>
+        <div class="summary-grid">
           <div class="summary-item">
-            <h3>Total Item</h3>
-            <p id="totalBarang">0</p>
+            <div class="angka" id="totalBarang">0</div>
+            <div class="label">Total Produk</div>
           </div>
-          <div class="summary-item" style="border-left-color: #2ecc71;">
-            <h3>Stok Pupuk</h3>
-            <p id="totalPupuk">0</p>
+          <div class="summary-item">
+            <div class="angka" id="totalPupuk">0 Kg</div>
+            <div class="label">Stok Pupuk</div>
           </div>
-          <div class="summary-item" style="border-left-color: #e67e22;">
-            <h3>Stok Chemical</h3>
-            <p id="totalChemical">0</p>
+          <div class="summary-item">
+            <div class="angka" id="totalChemical">0 Liter</div>
+            <div class="label">Stok Chemical</div>
           </div>
-          <div class="summary-item" style="border-left-color: #3498db;">
-            <h3>Pupuk Keluar</h3>
-            <p id="pupukKeluar">0</p>
+          <div class="summary-item">
+            <div class="angka" id="pupukKeluar">0 Kg</div>
+            <div class="label">Pupuk Keluar</div>
           </div>
-          <div class="summary-item" style="border-left-color: #e74c3c;">
-            <h3>Chemical Keluar</h3>
-            <p id="chemicalKeluar">0</p>
+          <div class="summary-item">
+            <div class="angka" id="chemicalKeluar">0 Liter</div>
+            <div class="label">Chemical Keluar</div>
           </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h2 id="formTitle">Input Transaksi Gudang</h2>
-            <form id="formBarang">
-              <input type="hidden" id="editIndex"> <!-- TARO DISINI -->
-              <div>
-                <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jenis
-                  Transaksi</label>
-                <select id="jenisTransaksi" required onchange="toggleTujuan()">
-                  <option value="Diterima">Barang Masuk / Diterima</option>
-                  <option value="Dikirim">Barang Keluar / Dikirim</option>
-                </select>
-              </div>
-              <div>
-                <label
-                  style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Kategori</label>
-                <select id="kategori" required onchange="updateNamaProduk()">
-                  <option value="">Pilih Kategori</option>
-                  <option value="Pupuk">Pupuk</option>
-                  <option value="Pestisida">Pestisida</option>
-                  <option value="Herbisida">Herbisida</option>
-                  <option value="Fungisida">Fungisida</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
-                  Produk</label>
-                <select id="namaBarang" required>
-                  <option value="">Pilih kategori dulu</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">No.
-                  Dokumen</label>
-                <input type="text" id="noDokumen" placeholder="SJ/001" required>
-              </div>
-              <div>
-                <label
-                  style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jumlah</label>
-                <input type="number" id="jumlah" placeholder="100" step="0.01" required>
-              </div>
-              <div>
-                <label
-                  style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Satuan</label>
-                <select id="satuan" required disabled style="background:#f8f9fa">
-                  <option value="Kg">Kg</option>
-                  <option value="Liter">Liter</option>
-                  <option value="Sak">Sak</option>
-                  <option value="Botol">Botol</option>
-                  <option value="Jerigen">Jerigen</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
-                  Mandor</label>
-                <input type="text" id="tujuan" placeholder="Kosongkan kalau Barang Masuk">
-              </div>
-              <div>
-                <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Tanggal
-                  Transaksi</label>
-                <input type="date" id="tglKirim" required>
-              </div>
-              <div style="grid-column: 1 / -1; display:flex; gap:10px;">
-                <button type="submit" class="btn-primary" id="btnSubmit" style="flex:1;">+ Simpan Transaksi</button>
-                <button type="button" class="btn-warning hidden" id="btnCancel" onclick="cancelEdit()">Batal</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="card">
-            <h2>Stok Gudang Saat Ini</h2>
-            <div id="tabelStok"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Riwayat Mutasi Barang</h2>
-          <div class="toolbar">
-            <select id="filterKategori">
-              <option value="Semua">Semua Kategori</option>
-              <option value="Pupuk">Pupuk</option>
-              <option value="Pestisida">Pestisida</option>
-              <option value="Herbisida">Herbisida</option>
-              <option value="Fungisida">Fungisida</option>
-            </select>
-            <select id="filterStatus">
-              <option value="Semua">Semua Transaksi</option>
-              <option value="Diterima">Barang Masuk</option>
-              <option value="Dikirim">Barang Keluar</option>
-            </select>
-            <button class="btn-success" onclick="exportExcel()">📊 Export Excel</button>
-            <button class="btn-success" onclick="exportPDF()">📄 Export PDF</button>
-            <!-- TAMBAHIN 2 BARIS INI -->
-            <button class="btn-success" style="background:#3498db" onclick="backupData()">💾 Backup Data</button>
-            <button class="btn-success" style="background:#f39c12" onclick="restoreData()">📥 Restore Data</button>
-          </div>
-          <table id="tabelBarang">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Kategori</th>
-                <th>Produk</th>
-                <th>No. Dokumen</th>
-                <th>Jumlah</th>
-                <th>Tujuan</th>
-                <th>Tanggal</th>
-                <th>Jenis</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
       </div>
 
-      <script>
-        let dataTransaksi = JSON.parse(localStorage.getItem('dataTransaksiTani')) || [];
+      <div class="grid-2">
+        <div class="card">
+          <h2 id="formTitle">Input Transaksi Gudang</h2>
+          <form id="formBarang">
+            <input type="hidden" id="editIndex"> <!-- TARO DISINI -->
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jenis
+                Transaksi</label>
+              <select id="jenisTransaksi" required onchange="toggleTujuan()">
+                <option value="Diterima">Barang Masuk / Diterima</option>
+                <option value="Dikirim">Barang Keluar / Dikirim</option>
+              </select>
+            </div>
+            <div>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Kategori</label>
+              <select id="kategori" required onchange="updateNamaProduk()">
+                <option value="">Pilih Kategori</option>
+                <option value="Pupuk">Pupuk</option>
+                <option value="Pestisida">Pestisida</option>
+                <option value="Herbisida">Herbisida</option>
+                <option value="Fungisida">Fungisida</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
+                Produk</label>
+              <select id="namaBarang" required>
+                <option value="">Pilih kategori dulu</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">No.
+                Dokumen</label>
+              <input type="text" id="noDokumen" placeholder="SJ/001" required>
+            </div>
+            <div>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jumlah</label>
+              <input type="number" id="jumlah" placeholder="100" step="0.01" required>
+            </div>
+            <div>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Satuan</label>
+              <select id="satuan" required disabled style="background:#f8f9fa">
+                <option value="Kg">Kg</option>
+                <option value="Liter">Liter</option>
+                <option value="Sak">Sak</option>
+                <option value="Botol">Botol</option>
+                <option value="Jerigen">Jerigen</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
+                Mandor</label>
+              <input type="text" id="tujuan" placeholder="Kosongkan kalau Barang Masuk">
+            </div>
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Tanggal
+                Transaksi</label>
+              <input type="date" id="tglKirim" required>
+            </div>
+            <div style="grid-column: 1 / -1; display:flex; gap:10px;">
+              <button type="submit" class="btn-primary" id="btnSubmit" style="flex:1;">+ Simpan Transaksi</button>
+              <button type="button" class="btn-warning hidden" id="btnCancel" onclick="cancelEdit()">Batal</button>
+            </div>
+          </form>
+        </div>
 
-        const tbody = document.querySelector("#tabelBarang tbody");
-        const form = document.getElementById("formBarang");
-        let chart;
+        <div class="card">
+          <h2>Stok Gudang Saat Ini</h2>
+          <div id="tabelStok"></div>
+        </div>
+      </div>
 
-        const listProduk = {
-          Pupuk: ["ZA", "NPK", "TSP", "KCL", "UREA"],
-          Herbisida: ["Amegras", "Amcomin", "Roundup", "Gramoxone"],
-          Pestisida: ["Dursban", "Decis", "Curacron", "Regent"],
-          Fungisida: ["Antracol", "Dithane", "Score", "AmistarTop"]
-        };
+      <div class="card">
+        <h2>Riwayat Mutasi Barang</h2>
+        <div class="toolbar">
+          <select id="filterKategori">
+            <option value="Semua">Semua Kategori</option>
+            <option value="Pupuk">Pupuk</option>
+            <option value="Pestisida">Pestisida</option>
+            <option value="Herbisida">Herbisida</option>
+            <option value="Fungisida">Fungisida</option>
+          </select>
+          <select id="filterStatus">
+            <option value="Semua">Semua Transaksi</option>
+            <option value="Diterima">Barang Masuk</option>
+            <option value="Dikirim">Barang Keluar</option>
+          </select>
+          <button class="btn-success" onclick="exportExcel()">📊 Export Excel</button>
+          <button class="btn-success" onclick="exportPDF()">📄 Export PDF</button>
+          <!-- TAMBAHIN 2 BARIS INI -->
+          <button class="btn-success" style="background:#3498db" onclick="backupData()">💾 Backup Data</button>
+          <button class="btn-success" style="background:#f39c12" onclick="restoreData()">📥 Restore Data</button>
+        </div>
+        <table id="tabelBarang">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Kategori</th>
+              <th>Produk</th>
+              <th>No. Dokumen</th>
+              <th>Jumlah</th>
+              <th>Tujuan</th>
+              <th>Tanggal</th>
+              <th>Jenis</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
 
-        // Hitung saldo stok gudang per produk
-        function hitungSaldo(namaProduk) {
-          let masuk = dataTransaksi
-            .filter(d => d.nama === namaProduk && d.jenis === 'Diterima')
-            .reduce((sum, d) => sum + d.jumlah, 0);
+    <script>
+      let dataTransaksi = JSON.parse(localStorage.getItem('dataTransaksiTani')) || [];
 
-          let keluar = dataTransaksi
-            .filter(d => d.nama === namaProduk && d.jenis === 'Dikirim')
-            .reduce((sum, d) => sum + d.jumlah, 0);
+      const tbody = document.querySelector("#tabelBarang tbody");
+      const form = document.getElementById("formBarang");
+      let chart;
 
-          return masuk - keluar;
+      const listProduk = {
+        Pupuk: ["ZA", "NPK", "TSP", "KCL", "UREA"],
+        Herbisida: ["Amegras", "Amcomin", "Roundup", "Gramoxone"],
+        Pestisida: ["Dursban", "Decis", "Curacron", "Regent"],
+        Fungisida: ["Antracol", "Dithane", "Score", "AmistarTop"]
+      };
+
+      // Hitung saldo stok gudang per produk
+      function hitungSaldo(namaProduk) {
+        let masuk = dataTransaksi
+          .filter(d => d.nama === namaProduk && d.jenis === 'Diterima')
+          .reduce((sum, d) => sum + d.jumlah, 0);
+
+        let keluar = dataTransaksi
+          .filter(d => d.nama === namaProduk && d.jenis === 'Dikirim')
+          .reduce((sum, d) => sum + d.jumlah, 0);
+
+        return masuk - keluar;
+      }
+
+      // Ambil semua produk unik + saldonya
+      function getStokGudang() {
+        const produkUnik = [...new Set(dataTransaksi.map(d => d.nama))];
+        return produkUnik.map(nama => {
+          const sample = dataTransaksi.find(d => d.nama === nama);
+          return {
+            nama: nama,
+            kategori: sample.kategori,
+            satuan: sample.satuan,
+            saldo: hitungSaldo(nama)
+          };
+        }).filter(p => p.saldo > 0); // Tampilkan yg ada stoknya aja
+      }
+
+      function updateNamaProduk() {
+        const kategori = document.getElementById('kategori').value;
+        const namaBarang = document.getElementById('namaBarang');
+        const satuan = document.getElementById('satuan');
+
+        namaBarang.innerHTML = '<option value="">Pilih Produk</option>';
+
+        // Auto set satuan
+        if (kategori === 'Pupuk') {
+          satuan.value = 'Kg';
+        } else if (kategori === 'Pestisida' || kategori === 'Herbisida' || kategori === 'Fungisida') {
+          satuan.value = 'Liter';
         }
 
-        // Ambil semua produk unik + saldonya
-        function getStokGudang() {
-          const produkUnik = [...new Set(dataTransaksi.map(d => d.nama))];
-          return produkUnik.map(nama => {
-            const sample = dataTransaksi.find(d => d.nama === nama);
-            return {
-              nama: nama,
-              kategori: sample.kategori,
-              satuan: sample.satuan,
-              saldo: hitungSaldo(nama)
-            };
-          }).filter(p => p.saldo > 0); // Tampilkan yg ada stoknya aja
-        }
-
-        function updateNamaProduk() {
-          const kategori = document.getElementById('kategori').value;
-          const namaBarang = document.getElementById('namaBarang');
-          const satuan = document.getElementById('satuan');
-
-          namaBarang.innerHTML = '<option value="">Pilih Produk</option>';
-
-          // Auto set satuan
-          if (kategori === 'Pupuk') {
-            satuan.value = 'Kg';
-          } else if (kategori === 'Pestisida' || kategori === 'Herbisida' || kategori === 'Fungisida') {
-            satuan.value = 'Liter';
-          }
-
-          if (kategori && listProduk[kategori]) {
-            listProduk[kategori].forEach(produk => {
-              namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
-            });
-          }
-        }
-
-        function toggleTujuan() {
-          const jenis = document.getElementById('jenisTransaksi').value;
-          const tujuan = document.getElementById('tujuan');
-          if (jenis === 'Diterima') {
-            tujuan.value = 'Gudang';
-            tujuan.disabled = true;
-            tujuan.placeholder = 'Otomatis: Gudang';
-          } else {
-            tujuan.value = '';
-            tujuan.disabled = false;
-            tujuan.placeholder = 'Pak Sutrisno';
-            tujuan.required = true;
-          }
-        }
-
-        function login() {
-          const user = document.getElementById('username').value;
-          const pass = document.getElementById('password').value;
-          if (user === 'admin' && pass === 'admin123') {
-            localStorage.setItem('isLoggedInTani', 'true');
-            showDashboard();
-          } else {
-            document.getElementById('loginError').innerText = 'Username/password salah!';
-          }
-        }
-
-        function logout() {
-          localStorage.removeItem('isLoggedInTani');
-          location.reload();
-        }
-
-        function showDashboard() {
-          document.getElementById('loginPage').classList.add('hidden');
-          document.getElementById('dashboard').classList.remove('hidden');
-          document.getElementById('tglKirim').valueAsDate = new Date();
-          renderTabel();
-          renderChart();
-          renderStok();
-        }
-
-        function saveData() {
-          localStorage.setItem('dataTransaksiTani', JSON.stringify(dataTransaksi));
-        }
-
-        function renderTabel() {
-          tbody.innerHTML = "";
-          let filterKat = document.getElementById('filterKategori').value;
-          let filterJenis = document.getElementById('filterStatus').value;
-
-          let dataFiltered = dataTransaksi.filter(d => {
-            return (filterKat === "Semua" || d.kategori === filterKat) &&
-              (filterJenis === "Semua" || d.jenis === filterJenis);
+        if (kategori && listProduk[kategori]) {
+          listProduk[kategori].forEach(produk => {
+            namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
           });
+        }
+      }
 
-          dataFiltered.forEach((item, index) => {
-            let realIndex = dataTransaksi.indexOf(item);
-            tbody.innerHTML += `
+      function toggleTujuan() {
+        const jenis = document.getElementById('jenisTransaksi').value;
+        const tujuan = document.getElementById('tujuan');
+        if (jenis === 'Diterima') {
+          tujuan.value = 'Gudang';
+          tujuan.disabled = true;
+          tujuan.placeholder = 'Otomatis: Gudang';
+        } else {
+          tujuan.value = '';
+          tujuan.disabled = false;
+          tujuan.placeholder = 'Pak Sutrisno';
+          tujuan.required = true;
+        }
+      }
+
+      function login() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        if (user === 'admin' && pass === 'admin123') {
+          localStorage.setItem('isLoggedInTani', 'true');
+          showDashboard();
+        } else {
+          document.getElementById('loginError').innerText = 'Username/password salah!';
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem('isLoggedInTani');
+        location.reload();
+      }
+
+      function showDashboard() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('tglKirim').valueAsDate = new Date();
+        renderTabel();
+        renderChart();
+        renderStok();
+      }
+
+      function saveData() {
+        localStorage.setItem('dataTransaksiTani', JSON.stringify(dataTransaksi));
+      }
+
+      function renderTabel() {
+        tbody.innerHTML = "";
+        let filterKat = document.getElementById('filterKategori').value;
+        let filterJenis = document.getElementById('filterStatus').value;
+
+        let dataFiltered = dataTransaksi.filter(d => {
+          return (filterKat === "Semua" || d.kategori === filterKat) &&
+            (filterJenis === "Semua" || d.jenis === filterJenis);
+        });
+
+        dataFiltered.forEach((item, index) => {
+          let realIndex = dataTransaksi.indexOf(item);
+          tbody.innerHTML += `
       <tr>
         <td>${index + 1}</td>
         <td><span class="kategori ${item.kategori}">${item.kategori}</span></td>
@@ -566,265 +635,265 @@
         </td>
       </tr>
     `;
-          });
-          updateSummary();
-          renderStok();
-        }
+        });
+        updateSummary();
+        renderStok();
+      }
 
-        function renderStok() {
-          const stok = getStokGudang();
-          let html = '<table style="width:100%; font-size:13px;"><thead><tr><th>Produk</th><th>Kategori</th><th>Stok Gudang</th><th>Mandor Terakhir</th></tr></thead><tbody>';
+      function renderStok() {
+        const stok = getStokGudang();
+        let html = '<table style="width:100%; font-size:13px;"><thead><tr><th>Produk</th><th>Kategori</th><th>Stok Gudang</th><th>Mandor Terakhir</th></tr></thead><tbody>';
 
-          stok.forEach(s => {
-            const lastKeluar = dataTransaksi
-              .filter(d => d.nama === s.nama && d.jenis === 'Dikirim')
-              .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))[0];
+        stok.forEach(s => {
+          const lastKeluar = dataTransaksi
+            .filter(d => d.nama === s.nama && d.jenis === 'Dikirim')
+            .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))[0];
 
-            const mandorTerakhir = lastKeluar ? lastKeluar.tujuan : '-';
-            const warnaStok = s.saldo < 10 ? 'color:#e74c3c;' : 'color:#27ae60;';
+          const mandorTerakhir = lastKeluar ? lastKeluar.tujuan : '-';
+          const warnaStok = s.saldo < 10 ? 'color:#e74c3c;' : 'color:#27ae60;';
 
-            // Bedain format: Pupuk bulat, Chemical pake koma
-            const formatSaldo = s.kategori === 'Pupuk' ? Math.round(s.saldo) : s.saldo.toFixed(2);
+          // Bedain format: Pupuk bulat, Chemical pake koma
+          const formatSaldo = s.kategori === 'Pupuk' ? Math.round(s.saldo) : s.saldo.toFixed(2);
 
-            html += `<tr>
+          html += `<tr>
       <td>${s.nama}</td>
       <td><span class="kategori ${s.kategori}">${s.kategori}</span></td>
       <td><b style="${warnaStok}">${formatSaldo} ${s.satuan}</b> ${s.saldo < 10 ? '⚠️' : ''}</td>
       <td>${mandorTerakhir}</td>
     </tr>`;
-          });
-
-          html += '</tbody></table>';
-          document.getElementById('tabelStok').innerHTML = html;
-        }
-
-        function updateSummary() {
-          document.getElementById("totalBarang").innerText = getStokGudang().length;
-
-          // Stok pupuk - BULAT tanpa koma
-          const stokPupuk = getStokGudang().filter(d => d.kategori === "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
-          document.getElementById("totalPupuk").innerText = Math.round(stokPupuk) + ' Kg';
-
-          // Stok chemical - PAKAI KOMA 2 digit
-          const stokChemical = getStokGudang().filter(d => d.kategori !== "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
-          document.getElementById("totalChemical").innerText = stokChemical.toFixed(2) + ' Liter';
-
-          // Total keluar pupuk - BULAT
-          const keluarPupuk = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-          document.getElementById("pupukKeluar").innerText = Math.round(keluarPupuk) + ' Kg';
-
-          // Total keluar chemical - PAKAI KOMA
-          const keluarChemical = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-          document.getElementById("chemicalKeluar").innerText = keluarChemical.toFixed(2) + ' Liter';
-        }
-
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          const jenis = document.getElementById('jenisTransaksi').value;
-          const nama = document.getElementById('namaBarang').value;
-          const jumlah = parseFloat(document.getElementById('jumlah').value); // GANTI parseInt JADI parseFloat
-          const editIndex = document.getElementById('editIndex').value;
-
-          let saldoSebelumEdit = hitungSaldo(nama);
-          if (editIndex !== '') {
-            const dataLama = dataTransaksi[editIndex];
-            if (dataLama.nama === nama) {
-              if (dataLama.jenis === 'Diterima') saldoSebelumEdit -= dataLama.jumlah;
-              if (dataLama.jenis === 'Dikirim') saldoSebelumEdit += dataLama.jumlah;
-            }
-          }
-
-          if (jenis === 'Dikirim') {
-            const saldo = editIndex !== '' ? saldoSebelumEdit : hitungSaldo(nama);
-            if (jumlah > saldo) {
-              alert(`Stok ${nama} di gudang cuma ${saldo.toFixed(2)}. Gak bisa kirim ${jumlah}!`);
-              return;
-            }
-          }
-
-          const data = {
-            kategori: document.getElementById('kategori').value,
-            nama: nama,
-            noDokumen: document.getElementById('noDokumen').value,
-            jumlah: jumlah,
-            satuan: document.getElementById('satuan').value,
-            tujuan: jenis === 'Dikirim' ? document.getElementById('tujuan').value : 'Gudang',
-            jenis: jenis,
-            tanggal: document.getElementById('tglKirim').value
-          };
-
-          if (editIndex === '') {
-            dataTransaksi.push(data);
-          } else {
-            dataTransaksi[editIndex] = data;
-            cancelEdit();
-          }
-
-          saveData();
-          form.reset();
-          document.getElementById('tglKirim').valueAsDate = new Date();
-          toggleTujuan();
-          renderTabel();
-          renderChart();
         });
 
-        function hapusData(index) {
-          if (confirm('Yakin hapus transaksi ini? Saldo gudang bakal berubah.')) {
-            dataTransaksi.splice(index, 1);
+        html += '</tbody></table>';
+        document.getElementById('tabelStok').innerHTML = html;
+      }
+
+      function updateSummary() {
+        document.getElementById("totalBarang").innerText = getStokGudang().length;
+
+        // Stok pupuk - BULAT tanpa koma
+        const stokPupuk = getStokGudang().filter(d => d.kategori === "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
+        document.getElementById("totalPupuk").innerText = Math.round(stokPupuk) + ' Kg';
+
+        // Stok chemical - PAKAI KOMA 2 digit
+        const stokChemical = getStokGudang().filter(d => d.kategori !== "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
+        document.getElementById("totalChemical").innerText = stokChemical.toFixed(2) + ' Liter';
+
+        // Total keluar pupuk - BULAT
+        const keluarPupuk = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+        document.getElementById("pupukKeluar").innerText = Math.round(keluarPupuk) + ' Kg';
+
+        // Total keluar chemical - PAKAI KOMA
+        const keluarChemical = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+        document.getElementById("chemicalKeluar").innerText = keluarChemical.toFixed(2) + ' Liter';
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const jenis = document.getElementById('jenisTransaksi').value;
+        const nama = document.getElementById('namaBarang').value;
+        const jumlah = parseFloat(document.getElementById('jumlah').value); // GANTI parseInt JADI parseFloat
+        const editIndex = document.getElementById('editIndex').value;
+
+        let saldoSebelumEdit = hitungSaldo(nama);
+        if (editIndex !== '') {
+          const dataLama = dataTransaksi[editIndex];
+          if (dataLama.nama === nama) {
+            if (dataLama.jenis === 'Diterima') saldoSebelumEdit -= dataLama.jumlah;
+            if (dataLama.jenis === 'Dikirim') saldoSebelumEdit += dataLama.jumlah;
+          }
+        }
+
+        if (jenis === 'Dikirim') {
+          const saldo = editIndex !== '' ? saldoSebelumEdit : hitungSaldo(nama);
+          if (jumlah > saldo) {
+            alert(`Stok ${nama} di gudang cuma ${saldo.toFixed(2)}. Gak bisa kirim ${jumlah}!`);
+            return;
+          }
+        }
+
+        const data = {
+          kategori: document.getElementById('kategori').value,
+          nama: nama,
+          noDokumen: document.getElementById('noDokumen').value,
+          jumlah: jumlah,
+          satuan: document.getElementById('satuan').value,
+          tujuan: jenis === 'Dikirim' ? document.getElementById('tujuan').value : 'Gudang',
+          jenis: jenis,
+          tanggal: document.getElementById('tglKirim').value
+        };
+
+        if (editIndex === '') {
+          dataTransaksi.push(data);
+        } else {
+          dataTransaksi[editIndex] = data;
+          cancelEdit();
+        }
+
+        saveData();
+        form.reset();
+        document.getElementById('tglKirim').valueAsDate = new Date();
+        toggleTujuan();
+        renderTabel();
+        renderChart();
+      });
+
+      function hapusData(index) {
+        if (confirm('Yakin hapus transaksi ini? Saldo gudang bakal berubah.')) {
+          dataTransaksi.splice(index, 1);
+          saveData();
+          renderTabel();
+          renderChart();
+        }
+      }
+
+      function editData(index) {
+        const item = dataTransaksi[index];
+        document.getElementById('editIndex').value = index;
+        document.getElementById('jenisTransaksi').value = item.jenis;
+        document.getElementById('kategori').value = item.kategori;
+        updateNamaProduk();
+        toggleTujuan(); // kalau lu pake fungsi toggleTujuan dari sebelumnya
+        setTimeout(() => {
+          document.getElementById('namaBarang').value = item.nama;
+        }, 50);
+        document.getElementById('noDokumen').value = item.noDokumen;
+        document.getElementById('jumlah').value = item.jumlah;
+        document.getElementById('satuan').value = item.satuan;
+        document.getElementById('tujuan').value = item.tujuan === 'Gudang' ? '' : item.tujuan;
+        document.getElementById('tglKirim').value = item.tanggal;
+
+        document.getElementById('formTitle').innerText = 'Edit Transaksi';
+        document.getElementById('btnSubmit').innerText = 'Update Transaksi';
+        document.getElementById('btnCancel').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function cancelEdit() {
+        document.getElementById('editIndex').value = '';
+        form.reset();
+        document.getElementById('tglKirim').valueAsDate = new Date();
+        toggleTujuan(); // reset tujuan field
+        document.getElementById('formTitle').innerText = 'Input Transaksi Gudang';
+        document.getElementById('btnSubmit').innerText = '+ Simpan Transaksi';
+        document.getElementById('btnCancel').classList.add('hidden');
+      }
+
+      function renderChart() {
+        const ctx = document.getElementById('chartDistribusi');
+        const bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const dataMasuk = new Array(12).fill(0);
+        const dataKeluar = new Array(12).fill(0);
+
+        dataTransaksi.forEach(item => {
+          const month = new Date(item.tanggal).getMonth();
+          if (item.jenis === 'Diterima') dataMasuk[month] += item.jumlah;
+          else dataKeluar[month] += item.jumlah;
+        });
+
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: bulan,
+            datasets: [
+              { label: 'Barang Masuk', data: dataMasuk, backgroundColor: '#27ae60' },
+              { label: 'Barang Keluar', data: dataKeluar, backgroundColor: '#e74c3c' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: { y: { title: { display: true, text: 'Jumlah' } } },
+            plugins: { title: { display: true, text: 'Mutasi Barang Masuk vs Keluar' } }
+          }
+        });
+      }
+
+      function exportExcel() {
+        const dataExport = dataTransaksi.map(item => ({
+          'No': dataTransaksi.indexOf(item) + 1,
+          'Jenis': item.jenis,
+          'Kategori': item.kategori,
+          'Produk': item.nama,
+          'No. Dokumen': item.noDokumen,
+          'Jumlah': item.jumlah,
+          'Satuan': item.satuan,
+          'Mandor/Tujuan': item.jenis === 'Diterima' ? 'Gudang' : item.tujuan,
+          'Tanggal': item.tanggal
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataExport);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Mutasi Barang");
+        XLSX.writeFile(wb, "Mutasi_Gudang.xlsx");
+      }
+
+      function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape' });
+        doc.text("Laporan Mutasi Gudang", 14, 15);
+        doc.autoTable({
+          head: [['No', 'Jenis', 'Kategori', 'Produk', 'No.Dok', 'Jumlah', 'Mandor/Tujuan', 'Tanggal']],
+          body: dataTransaksi.map((item, i) => [
+            i + 1,
+            item.jenis,
+            item.kategori,
+            item.nama,
+            item.noDokumen,
+            `${item.jumlah} ${item.satuan}`,
+            item.jenis === 'Diterima' ? 'Gudang' : item.tujuan,
+            item.tanggal
+          ]),
+          startY: 20,
+          styles: { fontSize: 8 }
+        });
+        doc.save("Mutasi_Gudang.pdf");
+      }
+
+      function backupData() {
+        if (dataTransaksi.length === 0) {
+          alert('Data masih kosong, gak ada yang dibackup');
+          return;
+        }
+
+        const backupText = JSON.stringify(dataTransaksi);
+
+        navigator.clipboard.writeText(backupText).then(() => {
+          alert(`Backup berhasil! ${dataTransaksi.length} transaksi udah dicopy ke clipboard.\n\nPaste ke WA/Note buat disimpen atau kirim ke device lain.`);
+        }).catch(() => {
+          prompt('Copy semua kode di bawah ini buat backup:', backupText);
+        });
+      }
+
+      function restoreData() {
+        const backupText = prompt('Paste kode backup dari device lain ke sini:');
+
+        if (!backupText) return;
+
+        try {
+          const dataBaru = JSON.parse(backupText);
+
+          if (!Array.isArray(dataBaru)) throw 'Format salah';
+
+          const konfirmasi = confirm(`Yakin mau restore ${dataBaru.length} transaksi?\n\nData yang ada sekarang bakal ketimpa semua!`);
+
+          if (konfirmasi) {
+            dataTransaksi = dataBaru;
             saveData();
             renderTabel();
             renderChart();
+            renderStok();
+            alert('Restore berhasil! Data udah sama kayak device satunya.');
           }
+        } catch (e) {
+          alert('Gagal restore! Pastiin kode backup-nya bener dan lengkap.');
         }
+      }
 
-        function editData(index) {
-          const item = dataTransaksi[index];
-          document.getElementById('editIndex').value = index;
-          document.getElementById('jenisTransaksi').value = item.jenis;
-          document.getElementById('kategori').value = item.kategori;
-          updateNamaProduk();
-          toggleTujuan(); // kalau lu pake fungsi toggleTujuan dari sebelumnya
-          setTimeout(() => {
-            document.getElementById('namaBarang').value = item.nama;
-          }, 50);
-          document.getElementById('noDokumen').value = item.noDokumen;
-          document.getElementById('jumlah').value = item.jumlah;
-          document.getElementById('satuan').value = item.satuan;
-          document.getElementById('tujuan').value = item.tujuan === 'Gudang' ? '' : item.tujuan;
-          document.getElementById('tglKirim').value = item.tanggal;
-
-          document.getElementById('formTitle').innerText = 'Edit Transaksi';
-          document.getElementById('btnSubmit').innerText = 'Update Transaksi';
-          document.getElementById('btnCancel').classList.remove('hidden');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelEdit() {
-          document.getElementById('editIndex').value = '';
-          form.reset();
-          document.getElementById('tglKirim').valueAsDate = new Date();
-          toggleTujuan(); // reset tujuan field
-          document.getElementById('formTitle').innerText = 'Input Transaksi Gudang';
-          document.getElementById('btnSubmit').innerText = '+ Simpan Transaksi';
-          document.getElementById('btnCancel').classList.add('hidden');
-        }
-
-        function renderChart() {
-          const ctx = document.getElementById('chartDistribusi');
-          const bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-          const dataMasuk = new Array(12).fill(0);
-          const dataKeluar = new Array(12).fill(0);
-
-          dataTransaksi.forEach(item => {
-            const month = new Date(item.tanggal).getMonth();
-            if (item.jenis === 'Diterima') dataMasuk[month] += item.jumlah;
-            else dataKeluar[month] += item.jumlah;
-          });
-
-          if (chart) chart.destroy();
-          chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: bulan,
-              datasets: [
-                { label: 'Barang Masuk', data: dataMasuk, backgroundColor: '#27ae60' },
-                { label: 'Barang Keluar', data: dataKeluar, backgroundColor: '#e74c3c' }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: true,
-              scales: { y: { title: { display: true, text: 'Jumlah' } } },
-              plugins: { title: { display: true, text: 'Mutasi Barang Masuk vs Keluar' } }
-            }
-          });
-        }
-
-        function exportExcel() {
-          const dataExport = dataTransaksi.map(item => ({
-            'No': dataTransaksi.indexOf(item) + 1,
-            'Jenis': item.jenis,
-            'Kategori': item.kategori,
-            'Produk': item.nama,
-            'No. Dokumen': item.noDokumen,
-            'Jumlah': item.jumlah,
-            'Satuan': item.satuan,
-            'Mandor/Tujuan': item.jenis === 'Diterima' ? 'Gudang' : item.tujuan,
-            'Tanggal': item.tanggal
-          }));
-
-          const ws = XLSX.utils.json_to_sheet(dataExport);
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Mutasi Barang");
-          XLSX.writeFile(wb, "Mutasi_Gudang.xlsx");
-        }
-
-        function exportPDF() {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF({ orientation: 'landscape' });
-          doc.text("Laporan Mutasi Gudang", 14, 15);
-          doc.autoTable({
-            head: [['No', 'Jenis', 'Kategori', 'Produk', 'No.Dok', 'Jumlah', 'Mandor/Tujuan', 'Tanggal']],
-            body: dataTransaksi.map((item, i) => [
-              i + 1,
-              item.jenis,
-              item.kategori,
-              item.nama,
-              item.noDokumen,
-              `${item.jumlah} ${item.satuan}`,
-              item.jenis === 'Diterima' ? 'Gudang' : item.tujuan,
-              item.tanggal
-            ]),
-            startY: 20,
-            styles: { fontSize: 8 }
-          });
-          doc.save("Mutasi_Gudang.pdf");
-        }
-
-        function backupData() {
-          if (dataTransaksi.length === 0) {
-            alert('Data masih kosong, gak ada yang dibackup');
-            return;
-          }
-
-          const backupText = JSON.stringify(dataTransaksi);
-
-          navigator.clipboard.writeText(backupText).then(() => {
-            alert(`Backup berhasil! ${dataTransaksi.length} transaksi udah dicopy ke clipboard.\n\nPaste ke WA/Note buat disimpen atau kirim ke device lain.`);
-          }).catch(() => {
-            prompt('Copy semua kode di bawah ini buat backup:', backupText);
-          });
-        }
-
-        function restoreData() {
-          const backupText = prompt('Paste kode backup dari device lain ke sini:');
-
-          if (!backupText) return;
-
-          try {
-            const dataBaru = JSON.parse(backupText);
-
-            if (!Array.isArray(dataBaru)) throw 'Format salah';
-
-            const konfirmasi = confirm(`Yakin mau restore ${dataBaru.length} transaksi?\n\nData yang ada sekarang bakal ketimpa semua!`);
-
-            if (konfirmasi) {
-              dataTransaksi = dataBaru;
-              saveData();
-              renderTabel();
-              renderChart();
-              renderStok();
-              alert('Restore berhasil! Data udah sama kayak device satunya.');
-            }
-          } catch (e) {
-            alert('Gagal restore! Pastiin kode backup-nya bener dan lengkap.');
-          }
-        }
-
-        document.getElementById('filterKategori').addEventListener("change", renderTabel);
-        document.getElementById('filterStatus').addEventListener("change", renderTabel);
-        if (localStorage.getItem('isLoggedInTani') === 'true') showDashboard();
-      </script>
+      document.getElementById('filterKategori').addEventListener("change", renderTabel);
+      document.getElementById('filterStatus').addEventListener("change", renderTabel);
+      if (localStorage.getItem('isLoggedInTani') === 'true') showDashboard();
+    </script>
 </body>
 
 </html>
