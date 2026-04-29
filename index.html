@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,46 +11,290 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; margin: 0; padding: 10px; }
-   .hidden { display: none!important; }
-   .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-    h1, h2 { color: #2c3e50; margin-bottom: 15px; }
-   .login-page { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
-   .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); width: 350px; text-align: center; }
-   .login-box input { width: 100%; margin: 10px 0; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-   .login-box button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-   .logout { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
-   .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
-   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-   .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-   .summary-item { background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center; }
-   .summary-item.angka { font-size: 20px; font-weight: 700; color: #2c3e50; }
-   .summary-item.label { font-size: 11px; color: #7f8c8d; margin-top: 4px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-    th { background: #f8f9fa; color: #2c3e50; font-size: 11px; }
-   .kategori { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-   .Pupuk { background: #2ecc71; color: white; }
-   .Pestisida { background: #e67e22; color: white; }
-   .Herbisida { background: #9b59b6; color: white; }
-   .Fungisida { background: #1abc9c; color: white; }
-   .status { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; white-space: nowrap; }
-   .Diterima { background: #27ae60; color: white; }
-   .Dikirim { background: #3498db; color: white; }
-    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 15px; align-items: end; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-    button { padding: 10px; border-radius: 6px; font-size: 14px; }
-   .btn-primary { background: #2ecc71; color: white; border: none; cursor: pointer; font-weight: bold; }
-   .btn-success { background: #27ae60; color: white; border: none; cursor: pointer; }
-   .btn-danger { background: #e74c3c; color: white; border: none; cursor: pointer; padding: 5px 10px; font-size: 12px; }
-   .btn-warning { background: #f39c12; color: white; border: none; cursor: pointer; padding: 5px 10px; font-size: 12px; margin-right: 5px; }
-   .toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-   .pagination { display: flex; gap: 5px; justify-content: center; margin-top: 15px; }
-   .pagination button { padding: 6px 12px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; }
-   .pagination button.active { background: #27ae60; color: white; border-color: #27ae60; }
-   .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1,
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .login-page {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    .login-box input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logout {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .summary-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .summary-item.angka {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .summary-item.label {
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f8f9fa;
+      color: #2c3e50;
+      font-size: 11px;
+    }
+
+    .kategori {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .Pupuk {
+      background: #2ecc71;
+      color: white;
+    }
+
+    .Pestisida {
+      background: #e67e22;
+      color: white;
+    }
+
+    .Herbisida {
+      background: #9b59b6;
+      color: white;
+    }
+
+    .Fungisida {
+      background: #1abc9c;
+      color: white;
+    }
+
+    .status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .Diterima {
+      background: #27ae60;
+      color: white;
+    }
+
+    .Dikirim {
+      background: #3498db;
+      color: white;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: end;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #2ecc71;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .btn-warning {
+      background: #f39c12;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .pagination button.active {
+      background: #27ae60;
+      color: white;
+      border-color: #27ae60;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .tag-afdeling {
+      display: inline-block;
+      background: #3498db;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -74,26 +319,34 @@
 
       <div class="card">
         <div style="font-weight:700; margin-bottom:12px;">Ringkasan Gudang</div>
-        <div class="summary-grid">
+        <div class="summary-grid" style="grid-template-columns: repeat(6, 1fr);">
           <div class="summary-item">
             <div class="angka" id="totalBarang">0</div>
             <div class="label">Total Produk</div>
           </div>
           <div class="summary-item">
             <div class="angka" id="totalPupuk">0 Kg</div>
-            <div class="label">Stok Pupuk</div>
+            <div class="label">Total Pupuk Masuk</div>
           </div>
           <div class="summary-item">
             <div class="angka" id="totalChemical">0 Liter</div>
-            <div class="label">Stok Chemical</div>
+            <div class="label">Total Chemical Masuk</div>
           </div>
           <div class="summary-item">
             <div class="angka" id="pupukKeluar">0 Kg</div>
-            <div class="label">Pupuk Keluar</div>
+            <div class="label">Pupuk Terkirim</div>
           </div>
           <div class="summary-item">
             <div class="angka" id="chemicalKeluar">0 Liter</div>
-            <div class="label">Chemical Keluar</div>
+            <div class="label">Chemical Terkirim</div>
+          </div>
+          <div class="summary-item">
+            <div class="angka" id="sisaPupuk">0 Kg</div>
+            <div class="label">Sisa Pupuk</div>
+          </div>
+          <div class="summary-item">
+            <div class="angka" id="sisaChemical">0 Liter</div>
+            <div class="label">Sisa Chemical</div>
           </div>
         </div>
       </div>
@@ -104,14 +357,16 @@
           <form id="formBarang">
             <input type="hidden" id="editIndex">
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jenis Transaksi</label>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jenis
+                Transaksi</label>
               <select id="jenisTransaksi" required onchange="toggleTujuan()">
                 <option value="Diterima">Barang Masuk / Diterima</option>
                 <option value="Dikirim">Barang Keluar / Dikirim</option>
               </select>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Kategori</label>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Kategori</label>
               <select id="kategori" required onchange="updateNamaProduk()">
                 <option value="">Pilih Kategori</option>
                 <option value="Pupuk">Pupuk</option>
@@ -121,36 +376,63 @@
               </select>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama Produk</label>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
+                Produk</label>
               <select id="namaBarang" required>
                 <option value="">Pilih kategori dulu</option>
               </select>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">No. Dokumen</label>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">No.
+                Dokumen</label>
               <input type="text" id="noDokumen" placeholder="SJ/001" required>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jumlah</label>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Jumlah</label>
               <input type="number" id="jumlah" placeholder="100" step="0.01" required>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Satuan</label>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Satuan</label>
               <select id="satuan" required disabled style="background:#f8f9fa">
                 <option value="Kg">Kg</option>
                 <option value="Liter">Liter</option>
               </select>
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Hektar</label>
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Hektar</label>
               <input type="number" id="hektar" placeholder="0.000" step="0.001" min="0">
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama Mandor</label>
-              <input type="text" id="tujuan" placeholder="Kosongkan kalau Barang Masuk">
+              <label
+                style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Polygon</label>
+              <input type="text" id="polygon" placeholder="Ketik polygon: A1, B2">
+            </div>
+            <div id="wrapperMandor">
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama
+                Mandor</label>
+              <input type="text" id="tujuan" placeholder="Kosongkan = Gudang / Ketik nama mandor">
             </div>
             <div>
-              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Tanggal Transaksi</label>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Tujuan
+                Afdeling</label>
+              <select id="tujuanAfdeling">
+                <option value="">Pilih Tujuan</option>
+                <option value="KBN">KBN</option>
+                <option value="KBI">KBI</option>
+                <option value="KBD">KBD</option>
+                <option value="PC">PC</option>
+                <option value="R1">R1</option>
+                <option value="R2">R2</option>
+                <option value="R3">R3</option>
+                <option value="R4">R4</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Tanggal
+                Transaksi</label>
               <input type="date" id="tglKirim" required>
             </div>
             <div style="grid-column: 1 / -1; display:flex; gap:10px;">
@@ -203,6 +485,8 @@
               <th>No. Dokumen</th>
               <th>Jumlah</th>
               <th>Hektar</th>
+              <th>Polygon</th>
+              <th>Mandor</th>
               <th>Tujuan</th>
               <th>Tanggal</th>
               <th>Jenis</th>
@@ -238,6 +522,30 @@
       return masuk - keluar;
     }
 
+    function getStokPerMandor() {
+      const stokPerMandor = {};
+      dataTransaksi.forEach(d => {
+        const key = `${d.nama}__${d.tujuan}`;
+        if (!stokPerMandor[key]) {
+          stokPerMandor[key] = {
+            nama: d.nama,
+            kategori: d.kategori,
+            satuan: d.satuan,
+            mandor: d.tujuan,
+            stokAwal: 0,
+            stokTerkirim: 0,
+            sisaStok: 0
+          };
+        }
+        if (d.jenis === 'Diterima') stokPerMandor[key].stokAwal += d.jumlah;
+        if (d.jenis === 'Dikirim') stokPerMandor[key].stokTerkirim += d.jumlah;
+      });
+      Object.values(stokPerMandor).forEach(s => {
+        s.sisaStok = s.stokAwal - s.stokTerkirim;
+      });
+      return Object.values(stokPerMandor).filter(s => s.sisaStok > 0.001);
+    }
+
     function getStokGudang() {
       const produkUnik = [...new Set(dataTransaksi.map(d => d.nama))];
       return produkUnik.map(nama => {
@@ -247,44 +555,87 @@
     }
 
     function updateNamaProduk() {
+      const jenis = document.getElementById('jenisTransaksi').value;
       const kategori = document.getElementById('kategori').value;
       const namaBarang = document.getElementById('namaBarang');
       const satuan = document.getElementById('satuan');
+
       namaBarang.innerHTML = '<option value="">Pilih Produk</option>';
+
       if (kategori === 'Pupuk') satuan.value = 'Kg';
       else satuan.value = 'Liter';
-      if (kategori && listProduk[kategori]) {
-        listProduk[kategori].forEach(produk => {
+
+      if (jenis === 'Dikirim') {
+        const stokAda = getStokPerMandor().filter(s => s.kategori === kategori);
+        const produkUnik = [...new Set(stokAda.map(s => s.nama))];
+        produkUnik.forEach(produk => {
           namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
         });
+        if (produkUnik.length === 0) {
+          namaBarang.innerHTML = '<option value="">Gak ada stok</option>';
+        }
+      } else {
+        if (kategori && listProduk[kategori]) {
+          listProduk[kategori].forEach(produk => {
+            namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
+          });
+        }
+      }
+      updateMandorKeluar();
+    }
+
+    function updateMandorKeluar() {
+      const jenis = document.getElementById('jenisTransaksi').value;
+      const namaProduk = document.getElementById('namaBarang').value;
+      const wrapper = document.getElementById('wrapperMandor');
+      const inputLama = document.getElementById('tujuan');
+      const valueLama = inputLama.value;
+
+      if (jenis === 'Dikirim' && namaProduk) {
+        // BARANG KELUAR: bikin <select> cuma nama mandor
+        const mandorAda = getStokPerMandor().filter(s => s.nama === namaProduk);
+
+        let selectHTML = `
+      <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama Mandor</label>
+      <select id="tujuan" required>
+        <option value="">Pilih Mandor</option>
+    `;
+
+        mandorAda.forEach(s => {
+          selectHTML += `<option value="${s.mandor}">${s.mandor}</option>`;
+        });
+
+        selectHTML += `</select>`;
+        wrapper.innerHTML = selectHTML;
+
+        if (mandorAda.length === 0) {
+          wrapper.innerHTML = `
+        <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama Mandor</label>
+        <select id="tujuan" disabled>
+          <option value="">Gak ada stok</option>
+        </select>
+      `;
+        }
+      } else {
+        // BARANG MASUK: balikin jadi input bebas ketik
+        wrapper.innerHTML = `
+      <label style="display:block; font-size:13px; color:#7f8c8d; margin-bottom:4px; font-weight:600;">Nama Mandor</label>
+      <input type="text" id="tujuan" placeholder="Kosongkan = Gudang / Ketik nama mandor" value="${jenis === 'Diterima' ? valueLama : ''}">
+    `;
       }
     }
 
     function toggleTujuan() {
-      const jenis = document.getElementById('jenisTransaksi').value;
-      const tujuan = document.getElementById('tujuan');
-      if (jenis === 'Diterima') {
-        tujuan.value = 'Gudang';
-        tujuan.disabled = true;
-        tujuan.placeholder = 'Otomatis: Gudang';
-      } else {
-        tujuan.value = '';
-        tujuan.disabled = false;
-        tujuan.placeholder = 'Pak Sutrisno';
-        tujuan.required = true;
-      }
+      updateNamaProduk();
     }
 
     function updateFilterOptions() {
       const barangSet = new Set(dataTransaksi.map(d => d.nama));
-      const mandorSet = new Set(dataTransaksi.filter(d => d.jenis === 'Dikirim').map(d => d.tujuan));
-
+      const mandorSet = new Set(dataTransaksi.map(d => d.tujuan).filter(m => m && m !== 'Gudang'));
       const filterBarang = document.getElementById('filterBarang');
       const filterMandor = document.getElementById('filterMandor');
-
       filterBarang.innerHTML = '<option value="Semua">Semua Barang</option>';
       barangSet.forEach(b => filterBarang.innerHTML += `<option value="${b}">${b}</option>`);
-
       filterMandor.innerHTML = '<option value="Semua">Semua Mandor</option>';
       mandorSet.forEach(m => filterMandor.innerHTML += `<option value="${m}">${m}</option>`);
     }
@@ -327,19 +678,17 @@
 
       return dataTransaksi.filter(d => {
         return (filterKat === "Semua" || d.kategori === filterKat) &&
-               (filterJenis === "Semua" || d.jenis === filterJenis) &&
-               (filterBarang === "Semua" || d.nama === filterBarang) &&
-               (filterMandor === "Semua" || d.tujuan === filterMandor) &&
-               (filterTanggal === "" || d.tanggal === filterTanggal);
-      }).reverse(); // Terbaru di atas
+          (filterJenis === "Semua" || d.jenis === filterJenis) &&
+          (filterBarang === "Semua" || d.nama === filterBarang) &&
+          (filterMandor === "Semua" || d.tujuan === filterMandor) &&
+          (filterTanggal === "" || d.tanggal === filterTanggal);
+      }).reverse();
     }
 
     function renderTabel() {
       const dataFiltered = getFilteredData();
       const totalPages = Math.ceil(dataFiltered.length / itemsPerPage);
-
       if (currentPage > totalPages) currentPage = totalPages || 1;
-
       const start = (currentPage - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const pageData = dataFiltered.slice(start, end);
@@ -348,24 +697,25 @@
       pageData.forEach((item, index) => {
         let realIndex = dataTransaksi.indexOf(item);
         tbody.innerHTML += `
-          <tr>
-            <td>${start + index + 1}</td>
-            <td><span class="kategori ${item.kategori}">${item.kategori}</span></td>
-            <td>${item.nama}</td>
-            <td>${item.noDokumen}</td>
-            <td>${item.jumlah} ${item.satuan}</td>
-            <td>${item.hektar? item.hektar.toFixed(3) + ' Ha' : '-'}</td>
-            <td>${item.jenis === 'Diterima'? 'Gudang' : item.tujuan}</td>
-            <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
-            <td><span class="status ${item.jenis}">${item.jenis}</span></td>
-            <td>
-              <button class="btn-warning" onclick="editData(${realIndex})">Edit</button>
-              <button class="btn-danger" onclick="hapusData(${realIndex})">Hapus</button>
-            </td>
-          </tr>
-        `;
+        <tr>
+          <td>${start + index + 1}</td>
+          <td><span class="kategori ${item.kategori}">${item.kategori}</span></td>
+          <td>${item.nama}</td>
+          <td>${item.noDokumen}</td>
+          <td>${item.jumlah} ${item.satuan}</td>
+          <td>${item.hektar ? item.hektar.toFixed(3) + ' Ha' : '-'}</td>
+          <td>${item.polygon || '-'}</td>
+          <td>${item.tujuan}</td>
+          <td><span class="tag-afdeling">${item.tujuanAfdeling || '-'}</span></td>
+          <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
+          <td><span class="status ${item.jenis}">${item.jenis}</span></td>
+          <td>
+            <button class="btn-warning" onclick="editData(${realIndex})">Edit</button>
+            <button class="btn-danger" onclick="hapusData(${realIndex})">Hapus</button>
+          </td>
+        </tr>
+      `;
       });
-
       renderPagination(totalPages);
       updateSummary();
       renderStok();
@@ -374,20 +724,16 @@
     function renderPagination(totalPages) {
       const pagination = document.getElementById('pagination');
       pagination.innerHTML = '';
-
       if (totalPages <= 1) return;
-
-      pagination.innerHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1? 'disabled' : ''}>←</button>`;
-
+      pagination.innerHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
       for (let i = 1; i <= totalPages; i++) {
         if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-          pagination.innerHTML += `<button onclick="changePage(${i})" class="${i === currentPage? 'active' : ''}">${i}</button>`;
+          pagination.innerHTML += `<button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
         } else if (i === currentPage - 2 || i === currentPage + 2) {
           pagination.innerHTML += `<button disabled>...</button>`;
         }
       }
-
-      pagination.innerHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages? 'disabled' : ''}>→</button>`;
+      pagination.innerHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
     }
 
     function changePage(page) {
@@ -396,57 +742,101 @@
     }
 
     function renderStok() {
-      const stok = getStokGudang();
-      let html = '<table style="width:100%; font-size:13px;"><thead><tr><th>Produk</th><th>Kategori</th><th>Stok Gudang</th><th>Mandor Terakhir</th></tr></thead><tbody>';
-      stok.forEach(s => {
-        const lastKeluar = dataTransaksi.filter(d => d.nama === s.nama && d.jenis === 'Dikirim').sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))[0];
-        const mandorTerakhir = lastKeluar? lastKeluar.tujuan : '-';
-        const warnaStok = s.saldo < 10? 'color:#e74c3c;' : 'color:#27ae60;';
-        const formatSaldo = s.kategori === 'Pupuk'? Math.round(s.saldo) : s.saldo.toFixed(2);
-        html += `<tr>
-          <td>${s.nama}</td>
-          <td><span class="kategori ${s.kategori}">${s.kategori}</span></td>
-          <td><b style="${warnaStok}">${formatSaldo} ${s.satuan}</b> ${s.saldo < 10? '⚠️' : ''}</td>
-          <td>${mandorTerakhir}</td>
-        </tr>`;
+      const stokPerMandor = {};
+      dataTransaksi.filter(d => d.jenis === 'Diterima').forEach(d => {
+        const key = `${d.nama}__${d.tujuan}`;
+        if (!stokPerMandor[key]) {
+          stokPerMandor[key] = {
+            nama: d.nama,
+            kategori: d.kategori,
+            satuan: d.satuan,
+            mandor: d.tujuan,
+            stokAwal: 0,
+            stokTerkirim: 0,
+            sisaStok: 0
+          };
+        }
+        stokPerMandor[key].stokAwal += d.jumlah;
       });
+
+      dataTransaksi.filter(d => d.jenis === 'Dikirim').forEach(d => {
+        const key = `${d.nama}__${d.tujuan}`;
+        if (!stokPerMandor[key]) {
+          stokPerMandor[key] = {
+            nama: d.nama,
+            kategori: d.kategori,
+            satuan: d.satuan,
+            mandor: d.tujuan,
+            stokAwal: 0,
+            stokTerkirim: 0,
+            sisaStok: 0
+          };
+        }
+        stokPerMandor[key].stokTerkirim += d.jumlah;
+      });
+
+      Object.values(stokPerMandor).forEach(s => {
+        s.sisaStok = s.stokAwal - s.stokTerkirim;
+      });
+
+      let html = '<table style="width:100%; font-size:13px;"><thead><tr><th>Produk</th><th>Kategori</th><th>Mandor</th><th>Stok Awal</th><th>Stok Terkirim</th><th>Sisa Stok</th></tr></thead><tbody>';
+
+      Object.values(stokPerMandor).forEach(s => {
+        if (s.sisaStok <= 0.001) return;
+        const warnaStok = s.sisaStok < 10 ? 'color:#e74c3c;' : 'color:#27ae60;';
+        const formatAwal = s.kategori === 'Pupuk' ? Math.round(s.stokAwal) : s.stokAwal.toFixed(2);
+        const formatTerkirim = s.kategori === 'Pupuk' ? Math.round(s.stokTerkirim) : s.stokTerkirim.toFixed(2);
+        const formatSisa = s.kategori === 'Pupuk' ? Math.round(s.sisaStok) : s.sisaStok.toFixed(2);
+
+        html += `<tr>
+        <td><b>${s.nama}</b></td>
+        <td><span class="kategori ${s.kategori}">${s.kategori}</span></td>
+        <td><b>${s.mandor}</b></td>
+        <td>${formatAwal} ${s.satuan}</td>
+        <td>${formatTerkirim} ${s.satuan}</td>
+        <td><b style="${warnaStok}">${formatSisa} ${s.satuan}</b> ${s.sisaStok < 10 ? '⚠️' : ''}</td>
+      </tr>`;
+      });
+
       html += '</tbody></table>';
       document.getElementById('tabelStok').innerHTML = html;
     }
 
     function updateSummary() {
       document.getElementById("totalBarang").innerText = getStokGudang().length;
-      const stokPupuk = getStokGudang().filter(d => d.kategori === "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
-      document.getElementById("totalPupuk").innerText = Math.round(stokPupuk) + ' Kg';
-      const stokChemical = getStokGudang().filter(d => d.kategori!== "Pupuk").reduce((sum, d) => sum + d.saldo, 0);
-      document.getElementById("totalChemical").innerText = stokChemical.toFixed(2) + ' Liter';
-      const keluarPupuk = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("pupukKeluar").innerText = Math.round(keluarPupuk) + ' Kg';
-      const keluarChemical = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori!== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("chemicalKeluar").innerText = keluarChemical.toFixed(2) + ' Liter';
+      const totalPupukMasuk = dataTransaksi.filter(d => d.jenis === "Diterima" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+      document.getElementById("totalPupuk").innerText = Math.round(totalPupukMasuk) + ' Kg';
+      const totalChemicalMasuk = dataTransaksi.filter(d => d.jenis === "Diterima" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+      document.getElementById("totalChemical").innerText = totalChemicalMasuk.toFixed(2) + ' Liter';
+      const pupukKeluar = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+      document.getElementById("pupukKeluar").innerText = Math.round(pupukKeluar) + ' Kg';
+      const chemicalKeluar = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
+      document.getElementById("chemicalKeluar").innerText = chemicalKeluar.toFixed(2) + ' Liter';
+      const sisaPupuk = totalPupukMasuk - pupukKeluar;
+      document.getElementById("sisaPupuk").innerText = Math.round(sisaPupuk) + ' Kg';
+      const sisaChemical = totalChemicalMasuk - chemicalKeluar;
+      document.getElementById("sisaChemical").innerText = sisaChemical.toFixed(2) + ' Liter';
     }
 
     form.addEventListener("submit", function (e) {
+      document.getElementById('namaBarang').addEventListener("change", updateMandorKeluar);
       e.preventDefault();
       const jenis = document.getElementById('jenisTransaksi').value;
       const nama = document.getElementById('namaBarang').value;
       const jumlah = parseFloat(document.getElementById('jumlah').value);
       const hektar = parseFloat(document.getElementById('hektar').value) || 0;
+      const polygon = document.getElementById('polygon').value;
       const editIndex = document.getElementById('editIndex').value;
-
-      let saldoSebelumEdit = hitungSaldo(nama);
-      if (editIndex!== '') {
-        const dataLama = dataTransaksi[editIndex];
-        if (dataLama.nama === nama) {
-          if (dataLama.jenis === 'Diterima') saldoSebelumEdit -= dataLama.jumlah;
-          if (dataLama.jenis === 'Dikirim') saldoSebelumEdit += dataLama.jumlah;
-        }
-      }
+      const mandorTujuan = document.getElementById('tujuan').value || 'Gudang';
 
       if (jenis === 'Dikirim') {
-        const saldo = editIndex!== ''? saldoSebelumEdit : hitungSaldo(nama);
-        if (jumlah > saldo) {
-          alert(`Stok ${nama} di gudang cuma ${saldo.toFixed(2)}. Gak bisa kirim ${jumlah}!`);
+        const stokData = getStokPerMandor().find(s => s.nama === nama && s.mandor === mandorTujuan);
+        if (!stokData) {
+          alert(`❌ Gak bisa kirim!\n\nStok ${nama} di mandor "${mandorTujuan}" kosong.`);
+          return;
+        }
+        if (jumlah > stokData.sisaStok) {
+          alert(`❌ Stok kurang!\n\nSisa ${nama} di ${mandorTujuan} cuma ${stokData.sisaStok.toFixed(2)} ${stokData.satuan}`);
           return;
         }
       }
@@ -458,7 +848,9 @@
         jumlah: jumlah,
         satuan: document.getElementById('satuan').value,
         hektar: hektar,
-        tujuan: jenis === 'Dikirim'? document.getElementById('tujuan').value : 'Gudang',
+        polygon: polygon,
+        tujuan: mandorTujuan,
+        tujuanAfdeling: document.getElementById('tujuanAfdeling').value || '-',
         jenis: jenis,
         tanggal: document.getElementById('tglKirim').value
       };
@@ -479,6 +871,8 @@
       renderTabel();
     });
 
+    document.getElementById('namaBarang').addEventListener("change", updateMandorKeluar);
+
     function hapusData(index) {
       if (confirm('Yakin hapus transaksi ini? Saldo gudang bakal berubah.')) {
         dataTransaksi.splice(index, 1);
@@ -495,12 +889,17 @@
       document.getElementById('kategori').value = item.kategori;
       updateNamaProduk();
       toggleTujuan();
-      setTimeout(() => { document.getElementById('namaBarang').value = item.nama; }, 50);
+      setTimeout(() => {
+        document.getElementById('namaBarang').value = item.nama;
+        updateMandorKeluar();
+        setTimeout(() => { document.getElementById('tujuan').value = item.tujuan === 'Gudang' ? '' : item.tujuan; }, 50);
+      }, 50);
       document.getElementById('noDokumen').value = item.noDokumen;
       document.getElementById('jumlah').value = item.jumlah;
       document.getElementById('satuan').value = item.satuan;
       document.getElementById('hektar').value = item.hektar || '';
-      document.getElementById('tujuan').value = item.tujuan === 'Gudang'? '' : item.tujuan;
+      document.getElementById('polygon').value = item.polygon || '';
+      document.getElementById('tujuanAfdeling').value = item.tujuanAfdeling || '';
       document.getElementById('tglKirim').value = item.tanggal;
       document.getElementById('formTitle').innerText = 'Edit Transaksi';
       document.getElementById('btnSubmit').innerText = 'Update Transaksi';
@@ -532,7 +931,8 @@
       const dataExport = getFilteredData().map((item, i) => ({
         'No': i + 1, 'Jenis': item.jenis, 'Kategori': item.kategori, 'Produk': item.nama,
         'No. Dokumen': item.noDokumen, 'Jumlah': item.jumlah, 'Satuan': item.satuan,
-        'Hektar': item.hektar || 0, 'Mandor/Tujuan': item.jenis === 'Diterima'? 'Gudang' : item.tujuan, 'Tanggal': item.tanggal
+        'Hektar': item.hektar || 0, 'Polygon': item.polygon || '', 'Mandor': item.tujuan,
+        'Tujuan': item.tujuanAfdeling || '-', 'Tanggal': item.tanggal
       }));
       const ws = XLSX.utils.json_to_sheet(dataExport);
       const wb = XLSX.utils.book_new();
@@ -546,13 +946,13 @@
       doc.text("Laporan Mutasi Gudang", 14, 15);
       const dataExport = getFilteredData();
       doc.autoTable({
-        head: [['No', 'Jenis', 'Kategori', 'Produk', 'No.Dok', 'Jumlah', 'Hektar', 'Mandor/Tujuan', 'Tanggal']],
+        head: [['No', 'Jenis', 'Kategori', 'Produk', 'No.Dok', 'Jumlah', 'Ha', 'Polygon', 'Mandor', 'Tujuan', 'Tanggal']],
         body: dataExport.map((item, i) => [
           i + 1, item.jenis, item.kategori, item.nama, item.noDokumen,
-          `${item.jumlah} ${item.satuan}`, item.hektar? item.hektar.toFixed(3) : '-',
-          item.jenis === 'Diterima'? 'Gudang' : item.tujuan, item.tanggal
+          `${item.jumlah} ${item.satuan}`, item.hektar ? item.hektar.toFixed(3) : '-', item.polygon || '-',
+          item.tujuan, item.tujuanAfdeling || '-', item.tanggal
         ]),
-        startY: 20, styles: { fontSize: 8 }
+        startY: 20, styles: { fontSize: 7 }
       });
       doc.save("Mutasi_Gudang.pdf");
     }
@@ -561,7 +961,7 @@
       if (dataTransaksi.length === 0) { alert('Data masih kosong'); return; }
       const backupText = JSON.stringify(dataTransaksi);
       navigator.clipboard.writeText(backupText).then(() => {
-        alert(`Backup berhasil! ${dataTransaksi.length} transaksi udah dicopy ke clipboard.`);
+        alert('Backup berhasil dicopy! Simpan di tempat aman.');
       }).catch(() => { prompt('Copy semua kode ini:', backupText); });
     }
 
@@ -591,4 +991,5 @@
     if (localStorage.getItem('isLoggedInTani') === 'true') showDashboard();
   </script>
 </body>
+
 </html>
