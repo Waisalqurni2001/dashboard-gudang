@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Gudang</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -146,31 +145,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-    }
-
-    .summary-item {
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .summary-item.angka {
-      font-size: 20px;
-      font-weight: 700;
-      color: #2c3e50;
-    }
-
-    .summary-item.label {
-      font-size: 11px;
-      color: #7f8c8d;
-      margin-top: 4px;
     }
 
     table {
@@ -369,46 +343,12 @@
       </div>
 
       <div class="card">
-        <div style="font-weight:700; margin-bottom:12px;">Ringkasan Gudang</div>
-        <div class="summary-grid" style="grid-template-columns: repeat(7, 1fr);">
-          <div class="summary-item">
-            <div class="angka" id="totalBarang">0</div>
-            <div class="label">Total Produk</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="totalPupuk">0 Kg</div>
-            <div class="label">Total Pupuk Masuk</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="totalChemical">0 Liter</div>
-            <div class="label">Total Chemical Masuk</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="pupukKeluar">0 Kg</div>
-            <div class="label">Pupuk Terkirim</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="chemicalKeluar">0 Liter</div>
-            <div class="label">Chemical Terkirim</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="sisaPupuk">0 Kg</div>
-            <div class="label">Sisa Pupuk</div>
-          </div>
-          <div class="summary-item">
-            <div class="angka" id="sisaChemical">0 Liter</div>
-            <div class="label">Sisa Chemical</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
         <div
           style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
           <h2 style="margin:0;">Ringkasan Per Produk</h2>
-
           <div class="ringkasan-toolbar">
+            <input type="text" id="searchRingkasanMandor" placeholder="🔍 Cari Mandor...">
             <input type="text" id="searchRingkasanProduk" placeholder="🔍 Cari Produk...">
-
             <select id="filterKategoriExport">
               <option value="Semua">Semua Kategori</option>
               <option value="Pupuk">Pupuk</option>
@@ -416,7 +356,6 @@
               <option value="Herbisida">Herbisida</option>
               <option value="Fungisida">Fungisida</option>
             </select>
-
             <button class="btn-success" onclick="exportRingkasanExcel()">📊 Export Excel</button>
             <button class="btn-success" onclick="exportRingkasanPDF()">📄 Export PDF</button>
           </div>
@@ -606,7 +545,6 @@
 
     const tbody = document.querySelector("#tabelBarang tbody");
     const form = document.getElementById("formBarang");
-    let chart;
 
     const listProduk = {
       Pupuk: ["ZA", "NPK", "TSP", "KCL", "UREA"],
@@ -646,14 +584,15 @@
     function getStokPerMandor() {
       const stokPerMandor = {};
       dataTransaksi.forEach(d => {
-        const key = `${d.nama}__${d.tujuan}__${d.pekerjaan || '-'}`;
+        const mandor = d.tujuan || 'Gudang';
+        const key = `${d.nama}__${mandor}__${d.pekerjaan || '-'}`; // <- key pakai mandor
         if (!stokPerMandor[key]) {
           stokPerMandor[key] = {
             nama: d.nama,
             kategori: d.kategori,
             pekerjaan: d.pekerjaan || '-',
             satuan: d.satuan,
-            mandor: d.tujuan,
+            mandor: mandor,
             stokAwal: 0,
             stokTerkirim: 0,
             sisaStok: 0
@@ -680,10 +619,13 @@
       const ringkasan = {};
 
       dataTransaksi.forEach(d => {
-        const key = `${d.nama}__${d.kategori}__${d.satuan}`;
+        // Key pakai mandor + produk + kategori biar kebaca per mandor
+        const mandor = d.tujuan || 'Gudang';
+        const key = `${mandor}__${d.nama}__${d.kategori}__${d.satuan}`;
 
         if (!ringkasan[key]) {
           ringkasan[key] = {
+            mandor: mandor,
             produk: d.nama,
             kategori: d.kategori,
             satuan: d.satuan,
@@ -707,16 +649,21 @@
     }
 
     function renderRingkasanPerProduk() {
-      const search = document.getElementById('searchRingkasanProduk')?.value.toLowerCase() || '';
+      const searchMandor = document.getElementById('searchRingkasanMandor')?.value.toLowerCase() || '';
+      const searchProduk = document.getElementById('searchRingkasanProduk')?.value.toLowerCase() || '';
       let data = getRingkasanPerProduk();
 
-      if (search) {
-        data = data.filter(r => r.produk.toLowerCase().includes(search));
+      if (searchMandor) {
+        data = data.filter(r => r.mandor.toLowerCase().includes(searchMandor));
+      }
+      if (searchProduk) {
+        data = data.filter(r => r.produk.toLowerCase().includes(searchProduk));
       }
 
       let html = `<table style="width:100%; font-size:13px;">
     <thead>
       <tr>
+        <th>Mandor</th>
         <th>Produk</th>
         <th>Kategori</th>
         <th>Total Masuk</th>
@@ -727,11 +674,12 @@
     <tbody>`;
 
       if (data.length === 0) {
-        html += `<tr><td colspan="5" style="text-align:center; padding:20px; color:#7f8c8d;">Data kosong</td></tr>`;
+        html += `<tr><td colspan="6" style="text-align:center; padding:20px; color:#7f8c8d;">Data kosong</td></tr>`;
       } else {
-        data.sort((a, b) => a.produk.localeCompare(b.produk)).forEach(r => {
+        data.sort((a, b) => a.mandor.localeCompare(b.mandor) || a.produk.localeCompare(b.produk)).forEach(r => {
           const warnaSisa = r.sisa <= 0 ? 'color:#e74c3c;' : 'color:#27ae60;';
           html += `<tr>
+        <td><b>${r.mandor}</b></td>
         <td><b>${r.produk}</b></td>
         <td><span class="kategori ${r.kategori}">${r.kategori}</span></td>
         <td>${formatAngka(r.totalMasuk, r.kategori)} ${r.satuan}</td>
@@ -747,15 +695,19 @@
 
     function getDataRingkasanExport() {
       const filterKat = document.getElementById('filterKategoriExport').value;
-      const search = document.getElementById('searchRingkasanProduk')?.value.toLowerCase() || '';
+      const searchMandor = document.getElementById('searchRingkasanMandor')?.value.toLowerCase() || '';
+      const searchProduk = document.getElementById('searchRingkasanProduk')?.value.toLowerCase() || '';
 
       let data = getRingkasanPerProduk();
 
       if (filterKat !== 'Semua') {
         data = data.filter(r => r.kategori === filterKat);
       }
-      if (search) {
-        data = data.filter(r => r.produk.toLowerCase().includes(search));
+      if (searchMandor) {
+        data = data.filter(r => r.mandor.toLowerCase().includes(searchMandor));
+      }
+      if (searchProduk) {
+        data = data.filter(r => r.produk.toLowerCase().includes(searchProduk));
       }
 
       return data;
@@ -764,6 +716,7 @@
     function exportRingkasanExcel() {
       const dataExport = getDataRingkasanExport().map((item, i) => ({
         'No': i + 1,
+        'Mandor': item.mandor,
         'Produk': item.produk,
         'Kategori': item.kategori,
         'Total Masuk': item.totalMasuk,
@@ -806,15 +759,16 @@
       }
 
       doc.autoTable({
-        head: [['No', 'Produk', 'Kategori', 'Total Masuk', 'Terkirim', 'Sisa', 'Satuan']],
+        head: [['No', 'Mandor', 'Produk', 'Kategori', 'Total Masuk', 'Terkirim', 'Sisa', 'Satuan']], // <- URUTAN DIBENERIN
         body: dataExport.map((item, i) => [
           i + 1,
-          item.produk,
-          item.kategori,
-          formatAngka(item.totalMasuk, item.kategori),
-          formatAngka(item.totalKeluar, item.kategori),
-          formatAngka(item.sisa, item.kategori),
-          item.satuan
+          item.mandor,      // No 2: Mandor
+          item.produk,      // No 3: Produk
+          item.kategori,    // No 4: Kategori
+          formatAngka(item.totalMasuk, item.kategori),   // No 5: Total Masuk
+          formatAngka(item.totalKeluar, item.kategori),  // No 6: Terkirim
+          formatAngka(item.sisa, item.kategori),         // No 7: Sisa
+          item.satuan       // No 8: Satuan
         ]),
         startY: 28,
         styles: { fontSize: 9 },
@@ -823,36 +777,6 @@
 
       const namaFile = kat === 'Semua' ? 'Ringkasan_Semua' : `Ringkasan_${kat}`;
       doc.save(`${namaFile}_${new Date().toISOString().slice(0, 10)}.pdf`);
-    }
-
-    function updateNamaProduk() {
-      const kategori = document.getElementById('kategori').value;
-      const mandor = document.getElementById('tujuan').value;
-      const namaBarang = document.getElementById('namaBarang');
-      const satuan = document.getElementById('satuan');
-
-      namaBarang.innerHTML = '<option value="">Pilih Produk</option>';
-
-      if (kategori === 'Pupuk') satuan.value = 'Kg';
-      else satuan.value = 'Liter';
-
-      if (jenis === 'Dikirim' && mandor && kategori) {
-        // Filter produk sesuai mandor + kategori
-        const stokAda = getStokPerMandor().filter(s => s.mandor === mandor && s.kategori === kategori);
-        const produkUnik = [...new Set(stokAda.map(s => s.nama))];
-        produkUnik.forEach(produk => {
-          namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
-        });
-        if (produkUnik.length === 0) {
-          namaBarang.innerHTML = '<option value="">Gak ada stok</option>';
-        }
-      } else if (jenis === 'Diterima' && kategori && listProduk[kategori]) {
-        // Barang masuk tampil semua
-        listProduk[kategori].forEach(produk => {
-          namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
-        });
-      }
-      // HAPUS: updateMandorKeluar(); <- ini yang bikin reset
     }
 
     function updateMandorKeluar() {
@@ -930,7 +854,6 @@
       else satuan.value = 'Liter';
 
       if (jenis === 'Dikirim' && mandor && kategori) {
-        // Filter produk sesuai mandor + kategori
         const stokAda = getStokPerMandor().filter(s => s.mandor === mandor && s.kategori === kategori);
         const produkUnik = [...new Set(stokAda.map(s => s.nama))];
         produkUnik.forEach(produk => {
@@ -940,7 +863,6 @@
           namaBarang.innerHTML = '<option value="">Gak ada stok</option>';
         }
       } else if (jenis === 'Diterima' && kategori && listProduk[kategori]) {
-        // Barang masuk tampil semua
         listProduk[kategori].forEach(produk => {
           namaBarang.innerHTML += `<option value="${produk}">${produk}</option>`;
         });
@@ -1053,7 +975,6 @@
         `;
       });
       renderPagination(totalPages);
-      updateSummary();
       renderStok();
       renderRingkasanPerProduk();
     }
@@ -1163,28 +1084,6 @@
     function changePageStok(page) {
       currentPageStok = page;
       renderStok();
-    }
-
-    function updateSummary() {
-      document.getElementById("totalBarang").innerText = getStokGudang().length;
-
-      const totalPupukMasuk = dataTransaksi.filter(d => d.jenis === "Diterima" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("totalPupuk").innerText = formatAngka(totalPupukMasuk, 'Pupuk') + ' Kg';
-
-      const totalChemicalMasuk = dataTransaksi.filter(d => d.jenis === "Diterima" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("totalChemical").innerText = formatAngka(totalChemicalMasuk, 'Chemical') + ' Liter';
-
-      const pupukKeluar = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori === "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("pupukKeluar").innerText = formatAngka(pupukKeluar, 'Pupuk') + ' Kg';
-
-      const chemicalKeluar = dataTransaksi.filter(d => d.jenis === "Dikirim" && d.kategori !== "Pupuk").reduce((sum, d) => sum + d.jumlah, 0);
-      document.getElementById("chemicalKeluar").innerText = formatAngka(chemicalKeluar, 'Chemical') + ' Liter';
-
-      const sisaPupuk = totalPupukMasuk - pupukKeluar;
-      document.getElementById("sisaPupuk").innerText = formatAngka(sisaPupuk, 'Pupuk') + ' Kg';
-
-      const sisaChemical = totalChemicalMasuk - chemicalKeluar;
-      document.getElementById("sisaChemical").innerText = formatAngka(sisaChemical, 'Chemical') + ' Liter';
     }
 
     form.addEventListener("submit", function (e) {
@@ -1430,6 +1329,9 @@
         renderRingkasanPerProduk();
       });
       document.getElementById('filterKategoriExport')?.addEventListener('change', () => {
+        renderRingkasanPerProduk();
+      });
+      document.getElementById('searchRingkasanMandor')?.addEventListener('input', () => {
         renderRingkasanPerProduk();
       });
     });
