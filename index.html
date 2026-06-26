@@ -1154,14 +1154,30 @@
       document.getElementById('editIndex').value = index;
       document.getElementById('jenisTransaksi').value = item.jenis;
       document.getElementById('kategori').value = item.kategori;
+
+      // 1. Generate option pekerjaan dulu sesuai kategori
+      updatePekerjaan();
       document.getElementById('pekerjaan').value = item.pekerjaan || '';
-      updateNamaProduk();
+
+      // 2. Atur input Mandor sesuai jenis transaksi
       toggleTujuan();
+
       setTimeout(() => {
+        // 3. Generate option produk dulu
+        updateNamaProduk();
         document.getElementById('namaBarang').value = item.nama;
-        updateMandorKeluar();
-        setTimeout(() => { document.getElementById('tujuan').value = item.tujuan === 'Gudang' ? '' : item.tujuan; }, 50);
+
+        // 4. Baru isi Mandor. Kalau Dikirim = select, kalau Diterima = input text
+        if (item.jenis === 'Dikirim') {
+          updateMandorKeluar();
+          setTimeout(() => {
+            document.getElementById('tujuan').value = item.tujuan;
+          }, 50);
+        } else {
+          document.getElementById('tujuan').value = item.tujuan === 'Gudang' ? '' : item.tujuan;
+        }
       }, 50);
+
       document.getElementById('noDokumen').value = item.noDokumen;
       document.getElementById('jumlah').value = item.jumlah;
       document.getElementById('satuan').value = item.satuan;
